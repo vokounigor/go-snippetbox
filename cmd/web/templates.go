@@ -2,8 +2,10 @@ package main
 
 import (
 	"html/template"
+	"os"
 	"path/filepath"
 	"snippetbox/internal/models"
+	"strings"
 	"time"
 )
 
@@ -31,7 +33,17 @@ var functions = template.FuncMap{
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./ui/html/pages/*.gotmpl")
+	cwd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	// Needed when testing
+	if !strings.HasSuffix(cwd, "/cmd/web") {
+		cwd += "/cmd/web"
+	}
+
+	pages, err := filepath.Glob(filepath.Join(cwd, "/../../ui/html/pages/*.gotmpl"))
 	if err != nil {
 		return nil, err
 	}
@@ -39,12 +51,12 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.gotmpl")
+		ts, err := template.New(name).Funcs(functions).ParseFiles(filepath.Join(cwd, "/../../ui/html/base.gotmpl"))
 		if err != nil {
 			return nil, err
 		}
 
-		ts, err = ts.ParseGlob("./ui/html/partials/*.gotmpl")
+		ts, err = ts.ParseGlob(filepath.Join(cwd, "/../../ui/html/partials/*.gotmpl"))
 		if err != nil {
 			return nil, err
 		}

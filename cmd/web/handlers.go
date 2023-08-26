@@ -3,11 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"snippetbox/internal/models"
 	"snippetbox/internal/validator"
 	"strconv"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 type snippetCreateForm struct {
