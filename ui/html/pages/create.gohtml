@@ -2,7 +2,7 @@
 
 {{define "main"}}
   <form action="/snippet/create" method="POST">
-    <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}" />
+    <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}" >
     <div>
       <label>Title:</label>
       {{ with .Form.FieldErrors.title}}
@@ -28,3 +28,4 @@
     </div>
   </form>
 {{end}}
+

@@ -43,7 +43,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		cwd += "/cmd/web"
 	}
 
-	pages, err := filepath.Glob(filepath.Join(cwd, "/../../ui/html/pages/*.gotmpl"))
+	pages, err := filepath.Glob(filepath.Join(cwd, "/../../ui/html/pages/*.gohtml"))
 	if err != nil {
 		return nil, err
 	}
@@ -51,12 +51,12 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		ts, err := template.New(name).Funcs(functions).ParseFiles(filepath.Join(cwd, "/../../ui/html/base.gotmpl"))
+		ts, err := template.New(name).Funcs(functions).ParseFiles(filepath.Join(cwd, "/../../ui/html/base.gohtml"))
 		if err != nil {
 			return nil, err
 		}
 
-		ts, err = ts.ParseGlob(filepath.Join(cwd, "/../../ui/html/partials/*.gotmpl"))
+		ts, err = ts.ParseGlob(filepath.Join(cwd, "/../../ui/html/partials/*.gohtml"))
 		if err != nil {
 			return nil, err
 		}

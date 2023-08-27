@@ -46,7 +46,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Snippets = snippets
 
-	app.render(w, http.StatusOK, "home.gotmpl", data)
+	app.render(w, http.StatusOK, "home.gohtml", data)
 }
 
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
@@ -71,7 +71,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Snippet = snippet
 
-	app.render(w, http.StatusOK, "view.gotmpl", data)
+	app.render(w, http.StatusOK, "view.gohtml", data)
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
@@ -80,7 +80,7 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 		Expires: 365,
 	}
 
-	app.render(w, http.StatusOK, "create.gotmpl", data)
+	app.render(w, http.StatusOK, "create.gohtml", data)
 }
 
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +100,7 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 	if !form.IsValid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, http.StatusUnprocessableEntity, "create.gotmpl", data)
+		app.render(w, http.StatusUnprocessableEntity, "create.gohtml", data)
 		return
 	}
 
@@ -118,7 +118,7 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = userSignupForm{}
-	app.render(w, http.StatusOK, "signup.gotmpl", data)
+	app.render(w, http.StatusOK, "signup.gohtml", data)
 }
 
 func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
@@ -139,7 +139,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	if !form.IsValid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, http.StatusUnprocessableEntity, "signup.gotmpl", data)
+		app.render(w, http.StatusUnprocessableEntity, "signup.gohtml", data)
 		return
 	}
 
@@ -149,7 +149,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 			form.AddFieldError("email", "Email already in use")
 			data := app.newTemplateData(r)
 			data.Form = form
-			app.render(w, http.StatusUnprocessableEntity, "signup.gotmpl", data)
+			app.render(w, http.StatusUnprocessableEntity, "signup.gohtml", data)
 		} else {
 			app.serverError(w, err)
 		}
@@ -164,7 +164,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 func (app *application) userLogin(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = userLoginForm{}
-	app.render(w, http.StatusOK, "login.gotmpl", data)
+	app.render(w, http.StatusOK, "login.gohtml", data)
 }
 
 func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
@@ -183,7 +183,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	if !form.IsValid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, http.StatusUnprocessableEntity, "login.gotmpl", data)
+		app.render(w, http.StatusUnprocessableEntity, "login.gohtml", data)
 		return
 	}
 
@@ -193,7 +193,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 			form.AddNonFieldError("Email or password is incorrect")
 			data := app.newTemplateData(r)
 			data.Form = form
-			app.render(w, http.StatusUnprocessableEntity, "login.gotmpl", data)
+			app.render(w, http.StatusUnprocessableEntity, "login.gohtml", data)
 		} else {
 			app.serverError(w, err)
 		}
