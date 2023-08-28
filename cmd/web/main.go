@@ -27,6 +27,7 @@ type application struct {
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
+	debugMode      bool
 }
 
 func main() {
@@ -42,6 +43,7 @@ func main() {
 	defaultDsn := getDefaultDsn()
 	addr := flag.String("addr", fmt.Sprintf(":%s", port), "The application's port")
 	dsn := flag.String("dsn", defaultDsn, "MySql data source name")
+	debugMode := flag.Bool("debug", false, "Run app in debug mode")
 	flag.Parse()
 
 	db, err := openDB(*dsn)
@@ -70,6 +72,7 @@ func main() {
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
 		users:          &models.UserModel{DB: db},
+		debugMode:      *debugMode,
 	}
 
 	tlsConfig := &tls.Config{
