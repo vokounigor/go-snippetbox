@@ -40,11 +40,16 @@ func main() {
 	}
 
 	port := os.Getenv("PORT")
-	defaultDsn := getDefaultDsn()
 	addr := flag.String("addr", fmt.Sprintf(":%s", port), "The application's port")
-	dsn := flag.String("dsn", defaultDsn, "MySql data source name")
+	dsn := flag.String("dsn", "", "MySql data source name")
 	debugMode := flag.Bool("debug", false, "Run app in debug mode")
+	isDocker := flag.Bool("docker", false, "Is app running inside of Docker")
 	flag.Parse()
+
+	if *dsn == "" {
+		defaultDsn := getDefaultDsn(isDocker)
+		dsn = &defaultDsn
+	}
 
 	db, err := openDB(*dsn)
 	if err != nil {
@@ -106,10 +111,15 @@ func openDB(dsn string) (*sql.DB, error) {
 	return db, nil
 }
 
-func getDefaultDsn() string {
+func getDefaultDsn(isDocker *bool) string {
 	dbUser := os.Getenv("DB_USERNAME")
 	dbPass := os.Getenv("DB_PASS")
 	dbDatabase := os.Getenv("DB_DATABASE")
+	dbIP := os.Getenv("DB_IP")
+	dbPort := os.Getenv("DB_PORT")
 
-	return fmt.Sprintf("%s:%s@/%s?parseTime=true", dbUser, dbPass, dbDatabase)
+	if *isDocker {
+		return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPass, dbIP, dbPort, dbDatabase)
+	}
+	return fmt.Sprintf("%s:%s/%s?parseTime=true", dbUser, dbPass, dbDatabase)
 }

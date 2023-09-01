@@ -1,0 +1,26 @@
+version: '4'
+services:
+  snippetbox:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - '4000:4000'
+    depends_on:
+      - mysql
+    links:
+      - mysql:mysql
+    entrypoint: 
+      - /snippetbox
+      - -docker=true
+    restart: always
+  mysql:
+    container_name: mysql
+    image: mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - "MYSQL_DATABASE=${DB_DATABASE}"
+      - "MYSQL_USER=${DB_USERNAME}"
+      - "MYSQL_PASSWORD=${DB_PASS}"
+      - "MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}"
