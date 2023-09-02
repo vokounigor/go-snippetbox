@@ -16,6 +16,9 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 )
 
@@ -51,11 +54,29 @@ func main() {
 		dsn = &defaultDsn
 	}
 
+	// Connect to db
 	db, err := openDB(*dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
 	defer db.Close()
+
+	// Create a migrations driver
+	driver, err := mysql.WithInstance(db, &mysql.Config{})
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
+	migrations, err := migrate.NewWithDatabaseInstance("file://migrations", "mysql", driver)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
+	// Run the migrations
+	err = migrations.Up()
+	if err != nil {
+		errorLog.Fatal(err)
+	}
 
 	templateCache, err := newTemplateCache()
 	if err != nil {
@@ -119,7 +140,7 @@ func getDefaultDsn(isDocker *bool) string {
 	dbPort := os.Getenv("DB_PORT")
 
 	if *isDocker {
-		return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPass, dbIP, dbPort, dbDatabase)
+		return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&multiStatements=true", dbUser, dbPass, dbIP, dbPort, dbDatabase)
 	}
-	return fmt.Sprintf("%s:%s/%s?parseTime=true", dbUser, dbPass, dbDatabase)
+	return fmt.Sprintf("%s:%s@/%s?parseTime=true&multiStatements=true", dbUser, dbPass, dbDatabase)
 }

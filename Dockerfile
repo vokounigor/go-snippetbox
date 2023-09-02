@@ -9,3 +9,5 @@ WORKDIR /
 COPY --from=build-stage /snippetbox /snippetbox
 COPY .env /
 COPY tls /tls
+COPY migrations /migrations
+COPY ui /ui
